@@ -12,7 +12,7 @@ declare_id!("FoYSrfkztZJXMBa3Xv96JA7Khr5Tyccx6Q9Z4V8k7DQc");
 #[program]
 pub mod mine_solana_nft_anchor {
     use anchor_spl::{
-        metadata::create_metadata_accounts_v3,
+        metadata::{create_master_edition_v3, create_metadata_accounts_v3, CreateMasterEditionV3},
         token::{mint_to, MintTo},
     };
     use mpl_token_metadata::state::DataV2;
@@ -38,7 +38,7 @@ pub mod mine_solana_nft_anchor {
 
         // Create metadata account
         let cpi_context = CpiContext::new(
-            ctx.accounts.token_program.to_account_info(),
+            ctx.accounts.token_metadata_program.to_account_info(),
             CreateMetadataAccountsV3 {
                 metadata: ctx.accounts.metadata_account.to_account_info(),
                 mint: ctx.accounts.mint.to_account_info(),
@@ -61,6 +61,24 @@ pub mod mine_solana_nft_anchor {
         };
 
         create_metadata_accounts_v3(cpi_context, data_v2, false, true, None)?;
+
+        //create master edition account
+        let cpi_context = CpiContext::new(
+            ctx.accounts.token_metadata_program.to_account_info(),
+            CreateMasterEditionV3 {
+                edition: ctx.accounts.master_edition_account.to_account_info(),
+                mint: ctx.accounts.mint.to_account_info(),
+                update_authority: ctx.accounts.signer.to_account_info(),
+                mint_authority: ctx.accounts.signer.to_account_info(),
+                payer: ctx.accounts.signer.to_account_info(),
+                metadata: ctx.accounts.metadata_account.to_account_info(),
+                token_program: ctx.accounts.token_program.to_account_info(),
+                system_program: ctx.accounts.system_program.to_account_info(),
+                rent: ctx.accounts.rent.to_account_info(),
+            },
+        );
+
+        create_master_edition_v3(cpi_context, None)?;
         Ok(())
     }
 }

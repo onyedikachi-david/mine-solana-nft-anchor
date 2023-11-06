@@ -1,14 +1,14 @@
 [features]
 seeds = false
 skip-lint = false
-[programs.localnet]
+[programs.devnet]
 mine_solana_nft_anchor = "FoYSrfkztZJXMBa3Xv96JA7Khr5Tyccx6Q9Z4V8k7DQc"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "/home/david/.config/solana/id.json"
 
 [scripts]
